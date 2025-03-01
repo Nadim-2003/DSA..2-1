@@ -1,35 +1,77 @@
-#include<bits/stdc++.h>
+//44
+#include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-const int N=10e5;
-bool vis[N]={0};
-int level[N]={0};
-vector<int> graph[N];
-
-void insert(int a,int b){
-   graph[a].push_back(b);
-   graph[b].push_back(a);
+struct node
+{
+  int val;
+  node *left;
+  node *mid;
+  node *right;
+  node(int n)
+  {
+    val = n;
+    left = nullptr;
+    mid = nullptr;
+    right = nullptr;
+  }
+};
+node *findkey(node *root, int k)
+{
+  if (!root)
+    return nullptr;
+  if (root->val == k)
+    return root;
+  node *foundnode = findkey(root->left, k);
+  if (foundnode)
+    return foundnode;
+   foundnode = findkey(root->mid, k);
+  if (foundnode)
+     return foundnode;
+  return findkey(root->right, k);
 }
-
-void bfs(int a){
-   queue<int>q;
-   q.push(a);
-   vis[a]=true;
-   while(!q.empty()){
-      int ok=q.front();
-      q.pop();
-      cout<<ok<<" ";
-      for(auto it:graph[ok]){
-         if(!vis[it]) {
-           q.push(it);
-            vis[it]=true;
-           level[it]=level[ok]+1;
-         }
-
+void import(node* root)
+{
+  int n;
+  cin >> n;
+  while (n--)
+  {
+    int op, key, val;
+    cin >> op >> key >> val;
+    node *temp = findkey(root, key);
+    if (temp)
+    {
+      node *mover = new node(val);
+      if (op == 0)
+      {
+        temp->left = mover;
       }
-   }
+      if (op == 1)
+      {
+        temp->mid = mover;
+      }
+       if (op == 2)
+      {
+         temp->right = mover;
+       }
+    }
+  }
 }
-int main(){
-
-    return 0;
+void traversal(node *root)
+{
+  if (!root)
+    return;
+  traversal(root->left);
+  traversal(root->mid);
+  cout << root->val << endl;
+  traversal(root->right);
+}
+int main()
+{
+  int r;
+  cin >> r;
+  node *root1 = new node(r);
+  import(root1);
+   traversal(root1);
+  return 0;
 }
